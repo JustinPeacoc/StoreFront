@@ -3,7 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.1684
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoreFront.UI.MVC", "StoreFront.UI.MVC\StoreFront.UI.MVC.csproj", "{3718BD85-173C-4A3A-B2FF-64D23FFCA1ED}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EEF9555C-EB71-4F1A-9F8B-802100D00881}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoreFront.UI.MVC", "StoreFront.UI.MVC\StoreFront.UI.MVC.csproj", "{D6604BA4-0792-462B-964E-557600009088}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "configs", "configs", "{95C201D3-DD22-49BA-B1F8-B3BEE1834DF6}"
+	ProjectSection(SolutionItems) = preProject
+		connections.config = connections.config
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +21,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{3718BD85-173C-4A3A-B2FF-64D23FFCA1ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3718BD85-173C-4A3A-B2FF-64D23FFCA1ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3718BD85-173C-4A3A-B2FF-64D23FFCA1ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3718BD85-173C-4A3A-B2FF-64D23FFCA1ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6604BA4-0792-462B-964E-557600009088}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6604BA4-0792-462B-964E-557600009088}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6604BA4-0792-462B-964E-557600009088}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6604BA4-0792-462B-964E-557600009088}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
