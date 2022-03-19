@@ -108,10 +108,10 @@ namespace StoreFront.DATA.EF//.StoreFrontMetadata
 
     public class StockStatusMetadata
     {
+        [Display(Name = "In stock? ")]
         public int StockStatusID { get; set; }
         [DisplayFormat(NullDisplayText = "Out of stock")]
-        [Display(Name = "In stock? ")]
-        public Nullable<bool> InStock { get; set; }
+        public Nullable<bool> InStock { get; set; }        
     }
 
     [MetadataType(typeof(StockStatusMetadata))]
