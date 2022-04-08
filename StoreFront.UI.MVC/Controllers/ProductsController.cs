@@ -1,6 +1,11 @@
-﻿using StoreFront.DATA.EF;
+﻿using PagedList;
+using StoreFront.DATA.EF;
+using StoreFront.UI.MVC.Models;
+using StoreFront.UI.MVC.Utilities;
 using System;
+using System.Collections.Generic;
 using System.Data.Entity;
+using System.Drawing;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -19,27 +24,67 @@ namespace StoreFront.UI.MVC.Controllers
             return View(products.ToList());
         }
 
-        // GET: Products/Details/5
-        public ActionResult Details(int? id)
+        //// GET: Products/Details/5
+        //public ActionResult Details(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+        //    }
+        //    Product product = db.Products.Find(id);
+        //    if (product == null)
+        //    {
+        //        return HttpNotFound();
+        //    }
+        //    return View(product);
+        //}
+
+        #region AddToCart()
+        [HttpPost]
+        public ActionResult AddToCart(int qty, int productID)
         {
-            if (id == null)
+            Dictionary<int, CartItemViewModel> shoppingCart = null;
+
+            if (Session["cart"] != null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                shoppingCart = (Dictionary<int, CartItemViewModel>)Session["cart"];
             }
-            Product product = db.Products.Find(id);
-            if (product == null)
+            else
             {
-                return HttpNotFound();
+                shoppingCart = new Dictionary<int, CartItemViewModel>();
             }
-            return View(product);
+
+            Product shopProduct = db.Products.Where(b => b.ProductID == productID).FirstOrDefault();
+
+            if (shopProduct == null)
+            {
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                CartItemViewModel item = new CartItemViewModel(qty, shopProduct);
+
+                if (shoppingCart.ContainsKey(shopProduct.ProductID))
+                {
+                    shoppingCart[shopProduct.ProductID].Qty += qty;
+                }
+                else
+                {
+                    shoppingCart.Add(shopProduct.ProductID, item);
+                }
+                Session["cart"] = shoppingCart;
+            }
+            return RedirectToAction("Index", "ShoppingCart");
         }
+
+        #endregion
 
         // GET: Products/Create
         [Authorize(Roles = "Admin")]
         public ActionResult Create()
         {
             ViewBag.CategoryID = new SelectList(db.Categories, "CategoryID", "CategoryName");
-            ViewBag.StockStatusID = new SelectList(db.StockStatus1, "StockStatusID", "StockStatusID");
+            ViewBag.StockStatusID = new SelectList(db.StockStatus, "StockStatusID", "StockStatusID");
             return View();
         }
 
@@ -54,55 +99,56 @@ namespace StoreFront.UI.MVC.Controllers
             {
                 #region File Upload
 
-                //Default value for the image to noImage.png
-                string imageName = "noImage.jpg";
+                string file = "noImage.jpg";
 
-                //Check the input for the file upload and see iuf it is not null
                 if (productImage != null)
                 {
-                    //Get the file name and save it to a variable
-                    imageName = productImage.FileName;
+                    file = productImage.FileName;
 
-                    //Use the file name and retrieve ONLY the extension and save it to a variable
-                    string ext = imageName.Substring(imageName.LastIndexOf("."));
-
-                    //Create a whitelist of valid extensions
-                    string[] goodExts = new string[] { ".jpeg", ".jpg", ".png", ".gif" };
+                    string ext = file.Substring(file.LastIndexOf('.'));
 
 
-                    //Compare ours to the list
-                    if (goodExts.Contains(ext.ToLower()))
+                    string[] goodExts = { ".jpeg", ".jpg", ".png", ".gif" };
+
+                    //Check that the uploaded file ext is in our list of acceptable extensions
+                    //and chekc that the file size <= 4MB, which is the default maximum for ASP.NET
+
+                    if (goodExts.Contains(ext.ToLower()) && productImage.ContentLength <= 4194304)
                     {
-                        imageName = Guid.NewGuid() + ext;
+                        //Create a new file name (using a GUID)
+                        file = Guid.NewGuid() + ext;
 
-                        //Send this file to the web server
-                        productImage.SaveAs(Server.MapPath("~/Content/imgs" + imageName));
-                    }
-                    else
-                    {
-                        //Image was Not valid
-                        imageName = "noImage.jpg";
+                        #region Resize Image
+
+                        string savePath = Server.MapPath("~/Content/imgs/");
+
+                        Image convertedImage = Image.FromStream(productImage.InputStream);
+
+                        int maxImageSize = 1000;
+
+                        int maxThumbSize = 225;
+
+                        ImageUtility.ResizeImage(savePath, file, convertedImage, maxImageSize, maxThumbSize);
+
+                        #endregion
                     }
 
-                    //No matter whether or noit the file upload actually contained a file,
-                    //update the database with the current value of the filename
-                    product.ProductImage = imageName;
+                    //No matter what, update the PhotoUrl with the value of the file variable
+                    product.ProductImage = file;
                 }
 
                 #endregion
-
                 db.Products.Add(product);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.CategoryID = new SelectList(db.Categories, "CategoryID", "CategoryName");
-            ViewBag.StockStatusID = new SelectList(db.StockStatus1, "StockStatusID", "StockStatusID");
-            return View();
+            ViewBag.CategoryID = new SelectList(db.Categories, "CategoryID", "CategoryName", product.CategoryID);
+            ViewBag.StockStatusID = new SelectList(db.StockStatus, "StockStatusID", "StockStatusID", product.StockStatusID);
+            return View(product);
         }
 
         // GET: Products/Edit/5
-        [Authorize(Roles = "Admin")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -115,90 +161,152 @@ namespace StoreFront.UI.MVC.Controllers
                 return HttpNotFound();
             }
             ViewBag.CategoryID = new SelectList(db.Categories, "CategoryID", "CategoryName", product.CategoryID);
-            ViewBag.StockStatusID = new SelectList(db.StockStatus1, "StockStatusID", "StockStatusID", product.StockStatusID);
+            ViewBag.StockStatusID = new SelectList(db.StockStatus, "StockStatusID", "StockStatusID", product.StockStatusID);
             return View(product);
         }
 
         // POST: Products/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ProductID,ProductName,CategoryID,Price,Description,StockStatusID,ProductImage")] Product product, HttpPostedFile productImage)
+        public ActionResult Edit([Bind(Include = "ProductID,ProductName,CategoryID,Price,Description,StockStatusID,ProductImage")] Product product, HttpPostedFileBase productImage)
         {
             if (ModelState.IsValid)
             {
-                //db.Entry(product).State = EntityState.Modified;
-                //db.SaveChanges();
-                //return RedirectToAction("Index");
+                #region File Upload
 
+                //Check to see if a new file has been uploaded. If not, the HiddenFor()
+                //in the view will maintain the original value
+                string file = "noImage.jpg";
+
+                //If a file has been uploaded
                 if (productImage != null)
                 {
-                    string imageName = productImage.FileName;
+                    //Get the name
+                    file = productImage.FileName;
 
-                    string ext = imageName.Substring(imageName.LastIndexOf("."));
+                    //Capture the extension
+                    string ext = file.Substring(file.LastIndexOf('.'));
 
-                    string[] goodExts = new string[] { ".jpg", ".jpeg", ".png", ".gif" };
+                    //Create a "whitelist" of accepted extensions
+                    string[] goodExts = { ".jpeg", ".jpg", ".png", ".gif" };
 
-                    if (goodExts.Contains(ext.ToLower()))
+                    //Check that the uploaded file ext is in our list of acceptable extensions
+                    //and that the file size is <= 4MB
+
+                    if (goodExts.Contains(ext.ToLower()) && productImage.ContentLength <= 4194304)
                     {
-                        imageName = Guid.NewGuid() + ext;
+                        //Create a new file name (using a GUID)
+                        file = Guid.NewGuid() + ext;
 
-                        productImage.SaveAs(Server.MapPath("~/Content/imgs/" + imageName));
+                        #region Resize Image
 
-                        string currentFile = Request.Params["ProductImage"];
-                        if (currentFile != "noImage.jpg" && currentFile != null)
+                        string savePath = Server.MapPath("~/Content/imgs/");
+
+                        Image convertedImage = Image.FromStream(productImage.InputStream);
+
+                        int maxImageSize = 1000;
+
+                        int maxThumbSize = 225;
+
+                        ImageUtility.ResizeImage(savePath, file, convertedImage, maxImageSize, maxThumbSize);
+
+                        #endregion
+
+                        if (product.ProductImage != null && product.ProductImage != "noImage.jpg")
                         {
-                            System.IO.File.Delete(Server.MapPath("~/Content/imgs/" + currentFile));
+                            string path = Server.MapPath("~/Content/imgs/");
+                            ImageUtility.Delete(path, product.ProductImage);
                         }
+                        //Update the property of the object
+                        product.ProductImage = file;
                     }
 
-                    product.ProductImage = imageName;
                 }
-                    db.Entry(product).State = EntityState.Modified;
-                    db.SaveChanges();
-                    return RedirectToAction("Index");
+
+                #endregion
+                db.Entry(product).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("Index");
             }
             ViewBag.CategoryID = new SelectList(db.Categories, "CategoryID", "CategoryName", product.CategoryID);
-            ViewBag.StockStatusID = new SelectList(db.StockStatus1, "StockStatusID", "StockStatusID", product.StockStatusID);
+            ViewBag.StockStatusID = new SelectList(db.StockStatus, "StockStatusID", "StockStatusID", product.StockStatusID);
             return View(product);
         }
 
-        // GET: Products/Delete/5
-        [Authorize(Roles = "Admin")]
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Product product = db.Products.Find(id);
-            if (product == null)
-            {
-                return HttpNotFound();
-            }
-            return View(product);
-        }
+        //// GET: Products/Delete/5
+        //public ActionResult Delete(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+        //    }
+        //    Product product = db.Products.Find(id);
+        //    if (product == null)
+        //    {
+        //        return HttpNotFound();
+        //    }
+        //    return View(product);
+        //}
 
-        // POST: Products/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        //////// POST: Products/Delete/5
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult DeleteConfirmed(int id)
+        //{
+        //    Product product = db.Products.Find(id);
+
+        //    string path = Server.MapPath("~/Content/imgs/");
+        //    ImageUtility.Delete(path, product.ProductImage);
+        //    db.Products.Remove(product);
+        //    db.SaveChanges();
+        //    return RedirectToAction("Index");
+        //}
+
+        //protected override void Dispose(bool disposing)
+        //{
+        //    if (disposing)
+        //    {
+        //        db.Dispose();
+        //    }
+        //    base.Dispose(disposing);
+        //}
+
+
+
+        #region AJAX CRUD 
+        [AcceptVerbs(HttpVerbs.Post)]
+        public JsonResult AjaxDelete(int id)
         {
             Product product = db.Products.Find(id);
+
+            string path = Server.MapPath("~/Content/imgs/");
+            ImageUtility.Delete(path, product.ProductImage);
             db.Products.Remove(product);
             db.SaveChanges();
-            return RedirectToAction("Index");
+
+            string confirmMessage = string.Format("Deleted Product '{0}' from the store.", product.ProductName);
+            return Json(new { id, message = confirmMessage }, JsonRequestBehavior.AllowGet);
         }
 
-        protected override void Dispose(bool disposing)
+        [HttpGet]
+        public PartialViewResult ProductDetails(int id)
         {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
+            Product product = db.Products.Find(id);
+            return PartialView(product);
+
+            //Create Partial View (PublisherDetails.cshtml)
+            // - Template: Details
+            // - Model Class: Publisher
+            // - Data Context Class: BookStoreEntities
+            // - Check "Create as Partial View" checkbox
+            // - Minor tweaks to the View content
         }
+
+        #endregion
+
+       
+
     }
 }

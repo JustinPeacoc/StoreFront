@@ -1,0 +1,29 @@
+﻿@model StoreFront.DATA.EF.Product
+
+<div>
+    <dl class="dl-horizontal">
+        <dd>
+            @Html.DisplayFor(model => model.ProductName)
+        </dd>
+        <dd>
+            @Html.DisplayFor(model => model.Price)
+        </dd>
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dd>
+            <img style="height: 250px; width: 250px;" src="~/Content/imgs/@Model.ProductImage" alt="@Model.ProductName" />
+        </dd>
+
+        <dd>
+            @Html.DisplayFor(model => model.Category.CategoryName)
+        </dd>
+
+        <dd>
+            @Html.DisplayFor(model => model.StockStatu.StockStatusID)
+        </dd>
+    </dl>
+</div>
+
+
+

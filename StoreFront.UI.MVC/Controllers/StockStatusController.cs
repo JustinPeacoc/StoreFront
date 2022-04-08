@@ -18,7 +18,7 @@ namespace StoreFront.UI.MVC.Controllers
         [Authorize(Roles = "Admin")]
         public ActionResult Index()
         {
-            return View(db.StockStatus1.ToList());
+            return View(db.StockStatus.ToList());
         }
 
         // GET: StockStatus/Details/5
@@ -29,12 +29,12 @@ namespace StoreFront.UI.MVC.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            StockStatus stockStatus = db.StockStatus1.Find(id);
-            if (stockStatus == null)
+            StockStatu stockStatu = db.StockStatus.Find(id);
+            if (stockStatu == null)
             {
                 return HttpNotFound();
             }
-            return View(stockStatus);
+            return View(stockStatu);
         }
 
         // GET: StockStatus/Create
@@ -50,16 +50,16 @@ namespace StoreFront.UI.MVC.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "StockStatusID,InStock")] StockStatus stockStatus)
+        public ActionResult Create([Bind(Include = "StockStatusID,InStock")] StockStatu stockStatu)
         {
             if (ModelState.IsValid)
             {
-                db.StockStatus1.Add(stockStatus);
+                db.StockStatus.Add(stockStatu);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
-            return View(stockStatus);
+            return View(stockStatu);
         }
 
         // GET: StockStatus/Edit/5
@@ -70,29 +70,29 @@ namespace StoreFront.UI.MVC.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            StockStatus stockStatus = db.StockStatus1.Find(id);
-            if (stockStatus == null)
+            StockStatu stockStatu = db.StockStatus.Find(id);
+            if (stockStatu == null)
             {
                 return HttpNotFound();
             }
-            return View(stockStatus);
+            return View(stockStatu);
         }
 
         // POST: StockStatus/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
         [Authorize(Roles = "Admin")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "StockStatusID,InStock")] StockStatus stockStatus)
+        public ActionResult Edit([Bind(Include = "StockStatusID,InStock")] StockStatu stockStatu)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(stockStatus).State = EntityState.Modified;
+                db.Entry(stockStatu).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(stockStatus);
+            return View(stockStatu);
         }
 
         // GET: StockStatus/Delete/5
@@ -103,12 +103,12 @@ namespace StoreFront.UI.MVC.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            StockStatus stockStatus = db.StockStatus1.Find(id);
-            if (stockStatus == null)
+            StockStatu stockStatu = db.StockStatus.Find(id);
+            if (stockStatu == null)
             {
                 return HttpNotFound();
             }
-            return View(stockStatus);
+            return View(stockStatu);
         }
 
         // POST: StockStatus/Delete/5
@@ -117,8 +117,8 @@ namespace StoreFront.UI.MVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            StockStatus stockStatus = db.StockStatus1.Find(id);
-            db.StockStatus1.Remove(stockStatus);
+            StockStatu stockStatu = db.StockStatus.Find(id);
+            db.StockStatus.Remove(stockStatu);
             db.SaveChanges();
             return RedirectToAction("Index");
         }

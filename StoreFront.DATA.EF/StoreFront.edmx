@@ -92,23 +92,11 @@
           <Property Name="DepartmentID" Type="int" Nullable="false" />
           <Property Name="DirectReportID" Type="int" />
         </EntityType>
-        <EntityType Name="LAProducts">
-          <Key>
-            <PropertyRef Name="LAProductID" />
-          </Key>
-          <Property Name="LAProductID" Type="int" Nullable="false" />
-          <Property Name="LAProductName" Type="nvarchar" MaxLength="50" />
-          <Property Name="CategoryID" Type="int" Nullable="false" />
-          <Property Name="Price" Type="money" />
-          <Property Name="Description" Type="nvarchar(max)" />
-          <Property Name="StockStatusID" Type="int" Nullable="false" />
-          <Property Name="ProductImage" Type="varchar" MaxLength="100" />
-        </EntityType>
         <EntityType Name="Products">
           <Key>
             <PropertyRef Name="ProductID" />
           </Key>
-          <Property Name="ProductID" Type="int" Nullable="false" />
+          <Property Name="ProductID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ProductName" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="CategoryID" Type="int" Nullable="false" />
           <Property Name="Price" Type="money" />
@@ -121,7 +109,7 @@
             <PropertyRef Name="StockStatusID" />
           </Key>
           <Property Name="StockStatusID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="InStock" Type="bit" />
+          <Property Name="InStock" Type="varchar" MaxLength="20" />
         </EntityType>
         <EntityType Name="sysdiagrams">
           <Key>
@@ -213,30 +201,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_LAProducts_Category">
-          <End Role="Category" Type="Self.Category" Multiplicity="1" />
-          <End Role="LAProducts" Type="Self.LAProducts" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Category">
-              <PropertyRef Name="CategoryID" />
-            </Principal>
-            <Dependent Role="LAProducts">
-              <PropertyRef Name="CategoryID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_LAProducts_StockStatus">
-          <End Role="StockStatus" Type="Self.StockStatus" Multiplicity="1" />
-          <End Role="LAProducts" Type="Self.LAProducts" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="StockStatus">
-              <PropertyRef Name="StockStatusID" />
-            </Principal>
-            <Dependent Role="LAProducts">
-              <PropertyRef Name="StockStatusID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Products_Category">
           <End Role="Category" Type="Self.Category" Multiplicity="1" />
           <End Role="Products" Type="Self.Products" Multiplicity="*" />
@@ -271,7 +235,6 @@
           <EntitySet Name="Category" EntityType="Self.Category" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Department" EntityType="Self.Department" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Employee" EntityType="Self.Employee" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="LAProducts" EntityType="Self.LAProducts" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Products" EntityType="Self.Products" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="StockStatus" EntityType="Self.StockStatus" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
@@ -298,14 +261,6 @@
           <AssociationSet Name="FK_Employee_Employee" Association="Self.FK_Employee_Employee">
             <End Role="Employee" EntitySet="Employee" />
             <End Role="Employee1" EntitySet="Employee" />
-          </AssociationSet>
-          <AssociationSet Name="FK_LAProducts_Category" Association="Self.FK_LAProducts_Category">
-            <End Role="Category" EntitySet="Category" />
-            <End Role="LAProducts" EntitySet="LAProducts" />
-          </AssociationSet>
-          <AssociationSet Name="FK_LAProducts_StockStatus" Association="Self.FK_LAProducts_StockStatus">
-            <End Role="StockStatus" EntitySet="StockStatus" />
-            <End Role="LAProducts" EntitySet="LAProducts" />
           </AssociationSet>
           <AssociationSet Name="FK_Products_Category" Association="Self.FK_Products_Category">
             <End Role="Category" EntitySet="Category" />
@@ -386,7 +341,6 @@
           </Key>
           <Property Name="CategoryID" Type="Int32" Nullable="false" />
           <Property Name="CategoryName" Type="String" MaxLength="20" FixedLength="true" Unicode="true" />
-          <NavigationProperty Name="LAProducts" Relationship="Self.FK_LAProducts_Category" FromRole="Category" ToRole="LAProducts" />
           <NavigationProperty Name="Products" Relationship="Self.FK_Products_Category" FromRole="Category" ToRole="Products" />
         </EntityType>
         <EntityType Name="Department">
@@ -409,28 +363,12 @@
           <Property Name="DepartmentID" Type="Int32" Nullable="false" />
           <Property Name="DirectReportID" Type="Int32" />
           <NavigationProperty Name="Department" Relationship="Self.FK_Employee_Department" FromRole="Employee" ToRole="Department" />
-          <NavigationProperty Name="Employee1" Relationship="Self.FK_Employee_Employee" FromRole="Employee" ToRole="Employee1" />
-          <NavigationProperty Name="Employee2" Relationship="Self.FK_Employee_Employee" FromRole="Employee1" ToRole="Employee" />
-        </EntityType>
-        <EntityType Name="LAProduct">
-          <Key>
-            <PropertyRef Name="LAProductID" />
-          </Key>
-          <Property Name="LAProductID" Type="Int32" Nullable="false" />
-          <Property Name="LAProductName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CategoryID" Type="Int32" Nullable="false" />
-          <Property Name="Price" Type="Decimal" Precision="19" Scale="4" />
-          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="StockStatusID" Type="Int32" Nullable="false" />
-          <Property Name="ProductImage" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Category" Relationship="Self.FK_LAProducts_Category" FromRole="LAProducts" ToRole="Category" />
-          <NavigationProperty Name="StockStatu" Relationship="Self.FK_LAProducts_StockStatus" FromRole="LAProducts" ToRole="StockStatus" />
         </EntityType>
         <EntityType Name="Product">
           <Key>
             <PropertyRef Name="ProductID" />
           </Key>
-          <Property Name="ProductID" Type="Int32" Nullable="false" />
+          <Property Name="ProductID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ProductName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="CategoryID" Type="Int32" Nullable="false" />
           <Property Name="Price" Type="Decimal" Precision="19" Scale="4" />
@@ -440,13 +378,12 @@
           <NavigationProperty Name="Category" Relationship="Self.FK_Products_Category" FromRole="Products" ToRole="Category" />
           <NavigationProperty Name="StockStatu" Relationship="Self.FK_Products_StockStatus" FromRole="Products" ToRole="StockStatus" />
         </EntityType>
-        <EntityType Name="StockStatus">
+        <EntityType Name="StockStatu">
           <Key>
             <PropertyRef Name="StockStatusID" />
           </Key>
           <Property Name="StockStatusID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="InStock" Type="Boolean" />
-          <NavigationProperty Name="LAProducts" Relationship="Self.FK_LAProducts_StockStatus" FromRole="StockStatus" ToRole="LAProducts" />
+          <Property Name="InStock" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Products" Relationship="Self.FK_Products_StockStatus" FromRole="StockStatus" ToRole="Products" />
         </EntityType>
         <EntityType Name="sysdiagram">
@@ -487,18 +424,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_LAProducts_Category">
-          <End Role="Category" Type="Self.Category" Multiplicity="1" />
-          <End Role="LAProducts" Type="Self.LAProduct" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Category">
-              <PropertyRef Name="CategoryID" />
-            </Principal>
-            <Dependent Role="LAProducts">
-              <PropertyRef Name="CategoryID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Products_Category">
           <End Role="Category" Type="Self.Category" Multiplicity="1" />
           <End Role="Products" Type="Self.Product" Multiplicity="*" />
@@ -535,20 +460,8 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_LAProducts_StockStatus">
-          <End Role="StockStatus" Type="StorefrontModel.StockStatus" Multiplicity="1" />
-          <End Role="LAProducts" Type="Self.LAProduct" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="StockStatus">
-              <PropertyRef Name="StockStatusID" />
-            </Principal>
-            <Dependent Role="LAProducts">
-              <PropertyRef Name="StockStatusID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Products_StockStatus">
-          <End Role="StockStatus" Type="StorefrontModel.StockStatus" Multiplicity="1" />
+          <End Role="StockStatus" Type="Self.StockStatu" Multiplicity="1" />
           <End Role="Products" Type="Self.Product" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="StockStatus">
@@ -572,9 +485,8 @@
           <EntitySet Name="Categories" EntityType="Self.Category" />
           <EntitySet Name="Departments" EntityType="Self.Department" />
           <EntitySet Name="Employees" EntityType="Self.Employee" />
-          <EntitySet Name="LAProducts" EntityType="Self.LAProduct" />
           <EntitySet Name="Products" EntityType="Self.Product" />
-          <EntitySet Name="StockStatus1" EntityType="StorefrontModel.StockStatus" />
+          <EntitySet Name="StockStatus" EntityType="Self.StockStatu" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
           <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
@@ -583,10 +495,6 @@
           <AssociationSet Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="AspNetUserLogins" EntitySet="AspNetUserLogins" />
-          </AssociationSet>
-          <AssociationSet Name="FK_LAProducts_Category" Association="Self.FK_LAProducts_Category">
-            <End Role="Category" EntitySet="Categories" />
-            <End Role="LAProducts" EntitySet="LAProducts" />
           </AssociationSet>
           <AssociationSet Name="FK_Products_Category" Association="Self.FK_Products_Category">
             <End Role="Category" EntitySet="Categories" />
@@ -600,12 +508,8 @@
             <End Role="Employee" EntitySet="Employees" />
             <End Role="Employee1" EntitySet="Employees" />
           </AssociationSet>
-          <AssociationSet Name="FK_LAProducts_StockStatus" Association="Self.FK_LAProducts_StockStatus">
-            <End Role="StockStatus" EntitySet="StockStatus1" />
-            <End Role="LAProducts" EntitySet="LAProducts" />
-          </AssociationSet>
           <AssociationSet Name="FK_Products_StockStatus" Association="Self.FK_Products_StockStatus">
-            <End Role="StockStatus" EntitySet="StockStatus1" />
+            <End Role="StockStatus" EntitySet="StockStatus" />
             <End Role="Products" EntitySet="Products" />
           </AssociationSet>
           <AssociationSet Name="AspNetUserRoles" Association="Self.AspNetUserRoles">
@@ -703,19 +607,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="LAProducts">
-            <EntityTypeMapping TypeName="StorefrontModel.LAProduct">
-              <MappingFragment StoreEntitySet="LAProducts">
-                <ScalarProperty Name="LAProductID" ColumnName="LAProductID" />
-                <ScalarProperty Name="LAProductName" ColumnName="LAProductName" />
-                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
-                <ScalarProperty Name="Price" ColumnName="Price" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="StockStatusID" ColumnName="StockStatusID" />
-                <ScalarProperty Name="ProductImage" ColumnName="ProductImage" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Products">
             <EntityTypeMapping TypeName="StorefrontModel.Product">
               <MappingFragment StoreEntitySet="Products">
@@ -729,8 +620,8 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="StockStatus1">
-            <EntityTypeMapping TypeName="StorefrontModel.StockStatus">
+          <EntitySetMapping Name="StockStatus">
+            <EntityTypeMapping TypeName="StorefrontModel.StockStatu">
               <MappingFragment StoreEntitySet="StockStatus">
                 <ScalarProperty Name="StockStatusID" ColumnName="StockStatusID" />
                 <ScalarProperty Name="InStock" ColumnName="InStock" />

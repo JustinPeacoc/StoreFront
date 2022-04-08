@@ -1,0 +1,115 @@
+﻿@model IEnumerable<StoreFront.DATA.EF.Product>
+
+@{
+    ViewBag.Title = "Product";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<div class="row panel-body panel-primary">
+    <br />
+    <form method="get" action="/Filters/ProductQS" class="form-horizontal pull-left">
+        <div class="form-group">
+            <div class="col-xs-offset-1 col-xs-11 col-sm-2">
+                <label for="searchFilter">Search</label>
+            </div>
+            <div class="col-xs-offset-1 col-sm-11 col-sm-5">
+                <input type="text" name="searchFilter" />
+            </div>
+            <div class="col-xs-offset-1 col-sm-11 col-sm-2">
+                <input type="submit" value="Go" class="btn btn-outline-dark mt-auto" />
+            </div>
+        </div>
+    </form>
+</div>
+
+@using (Html.BeginForm("ProductsPaging", "Filters", FormMethod.Get))
+{
+    <p>
+        Find by Category
+        @Html.TextBox("SearchString", ViewBag.SearchString as string)
+        <input type="submit" value="Search" />
+    </p>
+}
+
+<div class="row row-cols-2 row-cols-sm-3 row-cols-sm-12 justify-content-center" id="ProductsTable">
+    @foreach (var item in Model)
+    {
+        <div class="col mb-5" style="width: 225px; height: 345px;">
+            <div class="card h-100" id="Product-@item.ProductID">
+                <!-- Product image-->
+                <img class="card-img-top img-thumbnail" src="~/Content/imgs/t_@item.ProductImage" alt="@item.ProductName" title="@item.ProductName" />
+                <!-- Product details-->
+                <div class="card-body">
+                    <div class="text-center">
+                        <!-- Product name-->
+                        <h5 class="fw-bolder"> @Html.DisplayFor(modelItem => item.ProductName)</h5>
+                        <h6 class="fw-bold">@Html.DisplayFor(modelItem => item.Category.CategoryName)</h6>
+                        <!-- Product price-->
+                        @Html.DisplayFor(modelItem => item.Price)
+                        <br />
+                        @Html.DisplayFor(modelItem => item.StockStatu.InStock)
+                    </div>
+                </div>
+                <!-- Product actions-->
+                <div class="card-footer p-0 pt-0 border-top-0 sm-transparent">
+                    <div class="text-center"><a href="" class="DetailsLink btn btn-outline-dark mt-auto" id="@item.ProductID">Details</a></div>
+                    <div class=" text-center">
+                        @Ajax.ActionLink("Delete", "AJAXDelete", "Products", new { id = item.ProductID },
+                 new AjaxOptions
+                 {
+                     HttpMethod = "POST",
+                     Confirm = $"Are you sure you want to delete {item.ProductName} from the store?",
+                     OnSuccess = "deleteConfirmed",
+                     OnFailure = "deleteFailed"
+                 }
+                 )
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    }
+</div>
+
+<div id="ProductDetails"></div>
+
+
+@section scripts{
+    <script>
+        //*************************************AJAX DELETE ***************************************
+
+        function deleteConfirmed(response, status, data) {
+            var rowId = "#Product-" + response.id;
+            $("#ProductsTable").find(rowId).remove();
+
+            $("#MessageContent").html("<div class='alert alert-success'>" + response.message + "</div>");
+        }
+
+        function deleteFailed(response, status, data) {
+            $("#MessageContent").html("<div class='alert alert-danger'> Delete unsuccessful.");
+        }
+
+        //********************* SHOW DETAILS DIALOG BOX *******************
+        $('a.DetailsLink').click(function (e) {
+            e.preventDefault();
+            $("#ProductsDetails").data('pId', $(this).attr('id'))
+                .dialog({
+                    width: 400,
+                    height: 400,
+                    open: function () {
+                        var prodID = $(this).data('pId');
+                        $(this).load("/Product/ProductDetails/" + prodID);
+                    },
+                    title: "Product Details",
+                    modal: true,
+                    resizable: true
+                });//End conversion to dialog box
+
+        });//End details button click event handler
+
+    </script>
+}

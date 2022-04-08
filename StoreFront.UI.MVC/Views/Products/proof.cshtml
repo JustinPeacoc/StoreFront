@@ -1,0 +1,92 @@
+﻿
+@model PagedList.IPagedList<StoreFront.DATA.EF.Product>
+    @using PagedList.Mvc
+
+@{
+    ViewBag.Title = "Products";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div class="row panel-body panel-primary">
+    <br />
+    <form method="get" action="/Products/ProductQS" class="form-horizontal pull-left">
+        <div class="form-group">
+            <div class="col-xs-offset-1 col-xs-11 col-sm-2">
+                <label for="searchFilter">Search</label>
+            </div>
+            <div class="col-xs-offset-1 col-sm-11 col-sm-5">
+                <input type="text" name="searchFilter" />
+            </div>
+            <div class="col-xs-offset-1 col-sm-11 col-sm-2">
+                <input type="submit" value="Go" class="btn btn-outline-dark mt-auto" />
+            </div>
+        </div>
+    </form>
+</div>
+@using (Html.BeginForm("ProductsPaging", "Products", FormMethod.Get))
+{
+    <p>
+        Find by Category
+        @Html.TextBox("SearchString", ViewBag.SearchString as string)
+        <input type="submit" value="Search" />
+    </p>
+}
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+@Html.PagedListPager(Model, page => Url.Action("Products", new { page, searchString = ViewBag.SearchString}))
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().ProductName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().Price)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().Description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().ProductImage)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().Category.CategoryName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().StockStatu.InStock)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProductName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProductImage)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Category.CategoryName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StockStatu.InStock)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.ProductID }) |
+                @Html.ActionLink("Details", "Details", new { id = item.ProductID }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.ProductID })
+            </td>
+        </tr>
+    }
+
+</table>

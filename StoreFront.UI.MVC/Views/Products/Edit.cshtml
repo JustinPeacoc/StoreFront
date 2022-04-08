@@ -7,15 +7,16 @@
 <h2>Edit</h2>
 
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("Edit", "Products", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal">
         <h4>Product</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.ProductID)
+        @Html.HiddenFor(model => model.ProductImage)
 
         <div class="form-group">
             @Html.LabelFor(model => model.ProductName, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -23,6 +24,11 @@
                 @Html.EditorFor(model => model.ProductName, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.ProductName, "", new { @class = "text-danger" })
             </div>
+        </div>
+        <div class="form-group">
+            Existing Image:  <img style="height:500px; width: 500px;" src="@Url.Content("~/Content/imgs/"+@Model.ProductImage)" /><br /><br />
+            Change Image:<input type="file" style="display:inline;" name="ProductImage" />
+
         </div>
 
         <div class="form-group">
@@ -50,20 +56,15 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.StockStatusID, "StockStatusID", htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.StockStatu, "In Stock", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.DropDownList("StockStatusID", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.StockStatusID, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(modelItem => Model.StockStatu, "", new { @class = "text-danger" })
+
             </div>
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.ProductImage, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.ProductImage, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.ProductImage, "", new { @class = "text-danger" })
-            </div>
-        </div>
+
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">

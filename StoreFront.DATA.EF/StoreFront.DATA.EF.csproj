@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{1E3BA010-25AD-4819-A093-CC1D595F0A76}</ProjectGuid>
+    <ProjectGuid>{3BC2C363-877F-4E03-8F17-AB7160261B3E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>StoreFront.DATA.EF</RootNamespace>
@@ -74,14 +74,12 @@
     <Compile Include="Employee.cs">
       <DependentUpon>StoreFront.tt</DependentUpon>
     </Compile>
-    <Compile Include="LAProduct.cs">
-      <DependentUpon>StoreFront.tt</DependentUpon>
-    </Compile>
+    <Compile Include="Metadata\StoreFrontMetadata.cs" />
     <Compile Include="Product.cs">
       <DependentUpon>StoreFront.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StockStatus.cs">
+    <Compile Include="StockStatu.cs">
       <DependentUpon>StoreFront.tt</DependentUpon>
     </Compile>
     <Compile Include="StoreFront.Context.cs">
@@ -99,7 +97,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>StoreFront.edmx</DependentUpon>
     </Compile>
-    <Compile Include="StoreFrontMetadata\StoreFrontMetadata.cs" />
     <Compile Include="sysdiagram.cs">
       <DependentUpon>StoreFront.tt</DependentUpon>
     </Compile>
@@ -132,5 +129,6 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

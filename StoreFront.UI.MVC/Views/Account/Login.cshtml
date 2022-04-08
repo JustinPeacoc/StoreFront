@@ -4,13 +4,13 @@
     ViewBag.Title = "Log in";
 }
 
-<h2>@ViewBag.Title.</h2>
-<div class="row">
+
+<div class="row justify-content-center">
     <div class="col-md-8">
         <section id="loginForm">
             @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" })) {
                 @Html.AntiForgeryToken()
-                <h4>Use a local account to log in.</h4>
+                <h4>log in</h4>
                 <hr />
                 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                 <div class="form-group">
@@ -37,23 +37,19 @@
                 </div>
                 <div class="form-group">
                     <div class="col-md-offset-2 col-md-10">
-                        <input type="submit" value="Log in" class="btn btn-default" />
+                        <input type="submit" value="Log in" class="btn btn-outline-dark" />
                     </div>
                 </div>
-                <p>
-                    @Html.ActionLink("Register a new user?", "Register")
+                <p class= "nav-item nav-link">
+                    @Html.ActionLink("Register a new user?", "Register", new { @class = "nav-item nav-link" })
                 </p>
-                <p>
-                    @Html.ActionLink("Forget your password?", "ForgotPassword")
+                <p class= "nav-item nav-link">
+                    @Html.ActionLink("Forget your password?", "ForgotPassword", new { @class = "nav-item nav-link" })
                 </p>
             }
         </section>
     </div>
-    <div class="col-md-4">
-        <section id="socialLoginForm">
-            @Html.Partial("_ExternalLoginsListPartial", new StoreFront.UI.MVC.Models.ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })
-        </section>
-    </div>
+    
 </div>
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

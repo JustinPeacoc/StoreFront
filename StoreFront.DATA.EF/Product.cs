@@ -23,6 +23,6 @@ namespace StoreFront.DATA.EF
         public string ProductImage { get; set; }
     
         public virtual Category Category { get; set; }
-        public virtual StockStatus StockStatu { get; set; }
+        public virtual StockStatu StockStatu { get; set; }
     }
 }

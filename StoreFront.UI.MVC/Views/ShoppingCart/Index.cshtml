@@ -1,0 +1,54 @@
+﻿@*@model IEnumerable<StoreFront.UI.MVC.Models.CartItemViewModel>*@
+@model Dictionary<int, StoreFront.UI.MVC.Models.CartItemViewModel>
+
+@{
+    ViewBag.Title = "Shopping Cart";
+    decimal? cartTotal = 0;
+    int totalCountofItems = 0;
+}
+
+<h2>@ViewBag.Title</h2>
+
+@Html.ActionLink("Back to Shopping", "Index", "Products", null, new { @class = "btn btn-outline-dark mt-auto" })
+
+@if (ViewBag.Message != null)
+{
+    <h3 style="text-align:center; color: darkgoldenrod;">@ViewBag.Message</h3>
+}
+else
+{
+    <table class="table">
+        <tr>
+            <th></th>
+            <th></th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Total</th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <img src="~/Content/imgs/t_@item.Value.ShopProduct.ProductImage" alt="Product Image" title="@item.Value.ShopProduct.ProductName" />
+                </td>
+                <td>@Html.DisplayFor(modelItem => item.Value.ShopProduct.ProductName)</td>
+                <td>@Html.DisplayFor(modelItem => item.Value.ShopProduct.Price)</td>
+                <td>
+                    @using (Html.BeginForm("UpdateCart", "ShoppingCart", FormMethod.Post))
+                    {
+                        @Html.Hidden("productID", item.Value.ShopProduct.ProductID)
+                        @Html.TextBox("qty", item.Value.Qty, new { @class = "form-control", style = "max-width: 75px;display:inline;" })
+                        <input type="submit" value="Update Quantity" class="btn btn-outline-dark mt-auto" />
+                    }
+                    @{ totalCountofItems += item.Value.Qty;}
+                </td>
+            </tr>
+        }
+
+    </table>
+    <p>
+        You have @totalCountofItems @(totalCountofItems > 1 ? "products" : "product") in you cart.
+        Your Total before taxes and shipping is @string.Format($"{cartTotal:c}")
+    </p>
+}

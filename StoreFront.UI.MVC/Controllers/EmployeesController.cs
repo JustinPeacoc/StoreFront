@@ -17,7 +17,7 @@ namespace StoreFront.UI.MVC.Controllers
         // GET: Employees
         public ActionResult Index()
         {
-            var employees = db.Employees.Include(e => e.Department).Include(e => e.Employee2);
+            var employees = db.Employees.Include(e => e.Department);
             return View(employees.ToList());
         }
 
@@ -37,7 +37,6 @@ namespace StoreFront.UI.MVC.Controllers
         }
 
         // GET: Employees/Create
-        [Authorize(Roles = "Admin")]
         public ActionResult Create()
         {
             ViewBag.DepartmentID = new SelectList(db.Departments, "DepartmentID", "DepartmentName");
@@ -49,7 +48,6 @@ namespace StoreFront.UI.MVC.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "EmployeeID,EmployeeFName,EmployeeLName,DateOfHire,ExitDate,DepartmentID,DirectReportID")] Employee employee)
         {
@@ -66,7 +64,6 @@ namespace StoreFront.UI.MVC.Controllers
         }
 
         // GET: Employees/Edit/5
-        [Authorize(Roles = "Admin")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -87,7 +84,6 @@ namespace StoreFront.UI.MVC.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "EmployeeID,EmployeeFName,EmployeeLName,DateOfHire,ExitDate,DepartmentID,DirectReportID")] Employee employee)
         {
@@ -103,7 +99,6 @@ namespace StoreFront.UI.MVC.Controllers
         }
 
         // GET: Employees/Delete/5
-        [Authorize(Roles = "Admin")]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -119,7 +114,6 @@ namespace StoreFront.UI.MVC.Controllers
         }
 
         // POST: Employees/Delete/5
-        [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
