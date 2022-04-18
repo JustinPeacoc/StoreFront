@@ -56,10 +56,10 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.StockStatusID, "StockStatusID", htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.StockStatu, "Stock Status", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.DropDownList("StockStatusID", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.StockStatusID, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(model => model.StockStatu, "", new { @class = "text-danger" })
             </div>
         </div>
 

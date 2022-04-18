@@ -541,6 +541,7 @@
     <Content Include="Views\Filters\Index.cshtml" />
     <Content Include="Views\Filters\ProductQS.cshtml" />
     <Content Include="Views\Filters\ProductPaging.cshtml" />
+    <Content Include="Views\Home\About.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

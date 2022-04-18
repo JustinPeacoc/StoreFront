@@ -11,33 +11,10 @@ function toggleTheme() {
     console.log(currentTheme.getAttribute('href'));
 
     if (currentTheme.getAttribute('href').includes('dark')) {
-        currentTheme.setAttribute('href', '~/Content/css/custom-dark-theme.css');
+        currentTheme.setAttribute('href', '/Content/css/styles.css');
+
     }
     else {
-        currentTheme.setAttribute('href', '~/Content/css/styles.css');
-    }
-
-    if (localStorage.getItem('jspgtheme') != null) {
-        setTheme(localStorage.getItem('jspgtheme'));
-    }
-
-    function setTheme(themeName) {
-        let currentTheme = document.getElementById('theme');
-
-        switch (themeName) {
-
-            case 'styles':
-                currentTheme.setAttribute('href', '~/Content/css/styles.css');
-                break;
-            case 'dark':
-                currentTheme.setAttribute('href', '~/Content/css/custom-dark-theme.css');
-                break;
-            default:
-                currentTheme.setAttribute('href', '~/Content/css/styles.css');
-                break;
-        }
-
-        localStorage.setItem('jspgtheme', themeName);
-
+        currentTheme.setAttribute('href', '/Content/css/custom-dark-theme.css');
     }
 }

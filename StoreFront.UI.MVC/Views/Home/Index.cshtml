@@ -15,11 +15,11 @@
     <h3>Under $100</h3>
     <p>Check out these items below $100 in the Underground Market</p>
 
-    <div class="row row-cols-2 row-cols-sm-3 row-cols-sm-12 justify-content-center">
+    <div class="row justify-content-center">
         @foreach (var x in cheapProducts)
         {
-            <div class="col mb-5" style="width: 225px; height: 345px;">
-                <div class="card h-100">
+            <div class="row p-5" style="width: 400px; height: 400px;">
+               
                     <!-- Product image-->
                     <img class="card-img-top img-thumbnail" src="~/Content/imgs/t_@x.ProductImage" alt="@x.ProductName" />
                     <!-- Product details-->
@@ -40,7 +40,7 @@
                         <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Add to Shopping Cart</a></div>
                     </div>
                 </div>
-            </div>
+            
         }
     </div>
 
