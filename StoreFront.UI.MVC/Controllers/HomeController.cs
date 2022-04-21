@@ -1,18 +1,29 @@
-﻿using StoreFront.UI.MVC.Models;
+﻿using StoreFront.DATA.EF;
+using StoreFront.UI.MVC.Models;
+using StoreFront.UI.MVC.Utilities;
 using System;
-using System.Configuration;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Drawing;
+using System.Linq;
 using System.Net;
 using System.Net.Mail;
+using System.Web;
 using System.Web.Mvc;
+
 
 namespace StoreFront.UI.MVC.Controllers
 {
     public class HomeController : Controller
     {
+        private StorefrontEntities db = new StorefrontEntities();
         [HttpGet]
+
+        // GET: Products
         public ActionResult Index()
         {
-            return View();
+           var products = db.Products.Where(p => p.Price.Value < 100).Include(p => p.Category).Include(p => p.StockStatu);
+            return View(products.ToList());
         }
 
         [HttpGet]

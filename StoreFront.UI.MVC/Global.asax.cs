@@ -17,5 +17,13 @@ namespace StoreFront.UI.MVC
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
+
+        //protected void Application_Error()
+        //{
+        //    Response.Redirect("~/CustomError/Unresolved");
+
+        //    Response.Redirect("~/Error.chtml");
+        //}
     }
+
 }

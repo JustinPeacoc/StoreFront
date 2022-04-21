@@ -1,50 +1,43 @@
-﻿
+﻿@model IEnumerable<StoreFront.DATA.EF.Product>
 @{
     ViewBag.Title = "Home";
 }
 
 
-@{
-    StoreFront.DATA.EF.StorefrontEntities ctx = new StoreFront.DATA.EF.StorefrontEntities();
 
-    var cheapProducts = ctx.Products.Where(a => a.Price.Value < 100);
-    var cheapLAProducts = ctx.Products.Where(a => a.Price.Value < 100);
-}
+<h3>Under $100</h3>
+<p>Check out these items below $100 in the Underground Market</p>
 
+<div class="row justify-content-center">
+    @foreach (var products in Model)
+    {
+        <div class="row p-5" style="width: 400px; height: 400px;">
 
-    <h3>Under $100</h3>
-    <p>Check out these items below $100 in the Underground Market</p>
-
-    <div class="row justify-content-center">
-        @foreach (var x in cheapProducts)
-        {
-            <div class="row p-5" style="width: 400px; height: 400px;">
-               
-                    <!-- Product image-->
-                    <img class="card-img-top img-thumbnail" src="~/Content/imgs/t_@x.ProductImage" alt="@x.ProductName" />
-                    <!-- Product details-->
-                    <div class="card-body">
-                        <div class="text-center">
-                            <!-- Product name-->
-                            <h5 class="fw-bolder"> @Html.DisplayFor(modelItem => x.ProductName)</h5>
-                            <h6 class="fw-bold">@Html.DisplayFor(modelItem => x.Category.CategoryName)</h6>
-                            <!-- Product price-->
-                            @Html.DisplayFor(modelItem => x.Price)
-                            <br />
-                            @Html.DisplayFor(modelItem => x.StockStatu.InStock)
-                        </div>
-                    </div>
-                    <!-- Product actions-->
-                    <div class="card-footer p-0 pt-0 border-top-0 sm-transparent">
-                        <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="@Url.Action("Details", "Products", new { id = x.ProductID })">Details</a></div>
-                        <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Add to Shopping Cart</a></div>
-                    </div>
+            <!-- Product image-->
+            <img class="card-img-top img-thumbnail" src="~/Content/imgs/t_@products.ProductImage" alt="@products.ProductName" />
+            <!-- Product details-->
+            <div class="card-body">
+                <div class="text-center">
+                    <!-- Product name-->
+                    <h5 class="fw-bolder"> @Html.DisplayFor(modelItem => products.ProductName)</h5>
+                    <h6 class="fw-bold">@Html.DisplayFor(modelItem => products.Category.CategoryName)</h6>
+                    <!-- Product price-->
+                    @Html.DisplayFor(modelItem => products.Price)
+                    <br />
+                    @Html.DisplayFor(modelItem => products.StockStatu.InStock)
                 </div>
-            
-        }
-    </div>
+            </div>
+            <!-- Product actions-->
+            <div class="card-footer p-0 pt-0 border-top-0 sm-transparent">
+                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="@Url.Action("Details", "Products", new { id = products.ProductID })">Details</a></div>
+                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Add to Shopping Cart</a></div>
+            </div>
+        </div>
 
-    <h3>Under $100</h3>
+    }
+</div>
+
+@*<h3>Under $100</h3>
     <p>Check out these Star Wars merch below $100</p>
 
     <div class="row row-cols-2 row-cols-sm-3 row-cols-sm-12 justify-content-center" data-aos="fade-up" data-aos-delay="100">
@@ -74,7 +67,7 @@
                 </div>
             </div>
         }
-    </div>
+    </div>*@
 
 
 
