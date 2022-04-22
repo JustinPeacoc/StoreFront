@@ -6,9 +6,9 @@
 
 @if (Request.IsAuthenticated && User.IsInRole("Admin"))
 {
-<div>
-    @Html.ActionLink("Product Library", "Index", "Products", null, new { @class = "btn btn-outline-light mt-auto" })
-</div>
+    <div>
+        @Html.ActionLink("Product Library", "Index", "Products", null, new { @class = "btn btn-dark mt-auto" })
+    </div>
 }
 
 <div class="row panel-body panel-primary">
@@ -18,18 +18,21 @@
             <label for="searchFilter" class="p-4">Search By:</label>
 
             <input type="text" name="searchFilter" placeholder="Search by name" class="p-2" />
-            <input type="submit" value="Search" class="btn btn-outline-light mt-auto p-2" />
-            <div>
-                <label for="searchFilter" class="p-3">Search By Category</label>
-                @Html.DropDownList("SearchFilter", null, htmlAttributes: new { @class = "text-center" })
-                <input type="submit" value="Search" class="btn btn-outline-light mt-auto p-2" />
-            </div>
+            <input type="submit" value="Search" class="btn btn-dark mt-auto p-2" />
+            @using (Html.BeginForm("ProductPaging", "Filters", FormMethod.Get))
+            {
+                <div>
+                    <label for="searchFilter" class="p-3">Search By Category</label>
+                    @Html.DropDownList("SearchFilter", null, htmlAttributes: new { @class = "text-center" })
+                    <input type="submit" value="Search" class="btn btn-dark mt-auto p-2" />
+                </div>
+            }
         </div>
     </form>
 </div>
 
     Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
-    @Html.PagedListPager(Model, page => Url.Action("Products", new { page, searchString = ViewBag.SearchString }))
+    @Html.PagedListPager(Model, page => Url.Action("ProductPaging", new { page }))
 
     <div class="row row-cols-2 row-cols-sm-3 row-cols-sm-12 justify-content-center" id="ProductsTable">
         @foreach (var item in Model)
@@ -52,7 +55,7 @@
                     </div>
                     <!-- Product actions-->
                     <div class="card-footer p-0 pt-0 border-top-0 sm-transparent">
-                        <div class="text-center"><a href="" class="DetailsLink btn btn-outline-dark mt-auto" id="@item.ProductID">Details</a></div>
+                        <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="@Url.Action("Details", "Products", new { @id = item.ProductID })">Details</a></div>
                         <div class=" text-center">
                             @Ajax.ActionLink("Delete", "AJAXDelete", "Products", new { id = item.ProductID },
                      new AjaxOptions
@@ -89,23 +92,23 @@
                 $("#MessageContent").html("<div class='alert alert-danger'> Delete unsuccessful.");
             }
 
-            //********************* SHOW DETAILS DIALOG BOX *******************
-            $('a.DetailsLink').click(function (e) {
-                e.preventDefault();
-                $("#ProductDetails").data('pId', $(this).attr('id'))
-                    .dialog({
-                        width: 800,
-                        height: 800,
-                        open: function () {
-                            var prodID = $(this).data('pId');
-                            $(this).load("/Product/ProductDetails/" + prodID);
-                        },
-                        title: "Product Details",
-                        modal: true,
-                        resizable: true
-                    });//End conversion to dialog box
+            ////********************* SHOW DETAILS DIALOG BOX *******************
+            //$('a.DetailsLink').click(function (e) {
+            //    e.preventDefault();
+            //    $("#ProductDetails").data('pId', $(this).attr('id'))
+            //        .dialog({
+            //            width: 800,
+            //            height: 800,
+            //            open: function () {
+            //                var prodID = $(this).data('pId');
+            //                $(this).load("/Product/ProductDetails/" + prodID);
+            //            },
+            //            title: "Product Details",
+            //            modal: true,
+            //            resizable: true
+            //        });//End conversion to dialog box
 
-            });//End details button click event handler
+            //});//End details button click event handler
 
         </script>
     }

@@ -6,9 +6,7 @@
 
 <h2>@ViewBag.Title</h2>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
+>
 <div class="row panel-body panel-primary">
     <br />
     <form method="get" action="/Filters/ProductQS" class="form-horizontal pull-left">
@@ -26,13 +24,13 @@
     </form>
 </div>
 
-@using (Html.BeginForm("ProductsPaging", "Filters", FormMethod.Get))
+@using (Html.BeginForm("ProductPaging", "Filters", FormMethod.Get))
 {
-    <p>
-        Find by Category
-        @Html.TextBox("SearchString", ViewBag.SearchString as string)
-        <input type="submit" value="Search" />
-    </p>
+    <div>
+        <label for="searchFilter" class="p-3">Search By Category</label>
+        @Html.DropDownList("SearchFilter", null, htmlAttributes: new { @class = "text-center" })
+        <input type="submit" value="Search" class="btn btn-dark mt-auto p-2" />
+    </div>
 }
 
 <div class="row row-cols-2 row-cols-sm-3 row-cols-sm-12 justify-content-center" id="ProductsTable">
@@ -56,7 +54,7 @@
                 </div>
                 <!-- Product actions-->
                 <div class="card-footer p-0 pt-0 border-top-0 sm-transparent">
-                    <div class="text-center"><a href="" class="DetailsLink btn btn-outline-dark mt-auto" id="@item.ProductID">Details</a></div>
+                    <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="@Url.Action("Details", "Products", new { @id = item.ProductID })">Details</a></div>
                     <div class=" text-center">
                         @Ajax.ActionLink("Delete", "AJAXDelete", "Products", new { id = item.ProductID },
                  new AjaxOptions
@@ -93,23 +91,23 @@
             $("#MessageContent").html("<div class='alert alert-danger'> Delete unsuccessful.");
         }
 
-        //********************* SHOW DETAILS DIALOG BOX *******************
-        $('a.DetailsLink').click(function (e) {
-            e.preventDefault();
-            $("#ProductsDetails").data('pId', $(this).attr('id'))
-                .dialog({
-                    width: 400,
-                    height: 400,
-                    open: function () {
-                        var prodID = $(this).data('pId');
-                        $(this).load("/Product/ProductDetails/" + prodID);
-                    },
-                    title: "Product Details",
-                    modal: true,
-                    resizable: true
-                });//End conversion to dialog box
+            ////********************* SHOW DETAILS DIALOG BOX *******************
+            //$('a.DetailsLink').click(function (e) {
+            //    e.preventDefault();
+            //    $("#ProductsDetails").data('pId', $(this).attr('id'))
+            //        .dialog({
+            //            width: 400,
+            //            height: 400,
+            //            open: function () {
+            //                var prodID = $(this).data('pId');
+            //                $(this).load("/Product/ProductDetails/" + prodID);
+            //            },
+            //            title: "Product Details",
+            //            modal: true,
+            //            resizable: true
+            //        });//End conversion to dialog box
 
-        });//End details button click event handler
+            //});//End details button click event handler
 
     </script>
 }

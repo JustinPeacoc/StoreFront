@@ -8,9 +8,12 @@
 
 <h2>@ViewBag.Title</h2>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
+@if (Request.IsAuthenticated && User.IsInRole("Admin"))
+{
+    <p>
+        @Html.ActionLink("Create New", "Create")
+    </p>
+}
 
 
 
@@ -43,7 +46,7 @@
                     <div class="text-center">
                         <!-- Product name-->
                         <h5 class="fw-bolder" style="font-size: 10px;"> @Html.DisplayFor(modelItem => item.ProductName)</h5>
-                        <h6 class="fw-bold" style="font-size:10px;">@Html.DisplayFor(modelItem => item.Category)</h6>
+                        <h6 class="fw-bold" style="font-size:10px;">@Html.DisplayFor(modelItem => item.Category.CategoryName)</h6>
                         <!-- Product price-->
                         @Html.DisplayFor(modelItem => item.Price)
                         <br />
@@ -52,7 +55,7 @@
                 </div>
                 <!-- Product actions-->
                 <div class="card-footer p-0 pt-0 border-top-0 sm-transparent">
-                    <div class="text-center"><a  class="DetailsLink btn btn-outline-dark mt-auto" href="@Url.Action("Details", "Products")">Details</a></div>
+                    <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="@Url.Action("Details", "Products", new { @id = item.ProductID })">Details</a></div>
                     <div class=" text-center">
                         @Ajax.ActionLink("Delete", "AJAXDelete", "Products", new { id = item.ProductID },
                  new AjaxOptions
@@ -61,9 +64,16 @@
                      Confirm = $"Are you sure you want to delete {item.ProductName} from the store?",
                      OnSuccess = "deleteConfirmed",
                      OnFailure = "deleteFailed"
-                 }
-                 )
+                 })
+
                     </div>
+                    @using (Html.BeginForm("AddToCart", "Products",
+                       new { productID = item.ProductID }, FormMethod.Post, new { @class = "text-center" }))
+                    {
+                        @Html.HiddenFor(x => item.ProductID)
+                        @Html.TextBox("Qty", 1, new { @class = "form-control", style = "max-width: 75px; display: inline;" })
+                        <div class="text-center"><input class="btn btn-outline-dark mt-auto" type="submit" value="Add to Cart" name="qty" /></div>
+                    }
                 </div>
 
             </div>
@@ -89,23 +99,23 @@
             $("#MessageContent").html("<div class='alert alert-danger'> Delete unsuccessful.");
         }
 
-        //********************* SHOW DETAILS DIALOG BOX *******************
-        $('a.DetailsLink').click(function (e) {
-            e.preventDefault();
-            $("#ProductDetails").data('pId', $(this).attr('id'))
-                .dialog({
-                    width: 800,
-                    height: 800,
-                    open: function () {
-                        var prodID = $(this).data('pId');
-                        $(this).load("/Product/ProductDetails/" + prodID);
-                    },
-                    title: "Product Details",
-                    modal: true,
-                    resizable: true
-                });//End conversion to dialog box
+                    //********************* SHOW DETAILS DIALOG BOX *******************
+                    //$('a.DetailsLink').click(function (e) {
+                    //    e.preventDefault();
+                    //    $("#ProductDetails").data('pId', $(this).attr('id'))
+                    //        .dialog({
+                    //            width: 800,
+                    //            height: 800,
+                    //            open: function () {
+                    //                var prodID = $(this).data('pId');
+                    //                $(this).load("/Product/ProductDetails/" + prodID);
+                    //            },
+                    //            title: "Product Details",
+                    //            modal: true,
+                    //            resizable: true
+                    //        });//End conversion to dialog box
 
-        });//End details button click event handler
+                    //});//End details button click event handler
 
     </script>
 }
